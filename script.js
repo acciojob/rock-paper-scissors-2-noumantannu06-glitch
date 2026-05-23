@@ -1,89 +1,95 @@
-//your code here
 let totalRounds = 0;
 let roundsLeft = 0;
 let userPoints = 0;
 let computerPoints = 0;
 let gameStarted = false;
 
-const gameNumberInput = document.querySelector('[data-ns-test="game-number"]');
-const playButton = document.querySelector('[data-ns-test="play-game"]');
-const rockBtn = document.querySelector('[data-ns-test="rock"]');
-const paperBtn = document.querySelector('[data-ns-test="paper"]');
-const scissorsBtn = document.querySelector('[data-ns-test="scissors"]');
-
-const computerChooseEl = document.querySelector('[data-ns-test="computer-choose"]');
-const roundResultEl = document.querySelector('[data-ns-test="round-result"]');
-const roundsLeftEl = document.querySelector('[data-ns-test="rounds-left"]');
-const userPointsEl = document.querySelector('[data-ns-test="user-points"]');
-const computerPointsEl = document.querySelector('[data-ns-test="computer-points"]');
-const gameResultEl = document.querySelector('[data-ns-test="game-result"]');
-
-function updateUI() {
-  roundsLeftEl.textContent = roundsLeft;
-  userPointsEl.textContent = userPoints;
-  computerPointsEl.textContent = computerPoints;
+function $(val) {
+  return document.querySelector(`[data-ns-test="${val}"]`);
 }
 
-function getComputerChoice() {
-  const choice = Math.floor(Math.random() * 3);
-  window.computerChoose = choice;
-  const mapped = ["ROCK", "PAPER", "SCISSORS"];
-  computerChooseEl.textContent = mapped[choice];
-  return choice;
-}
+window.computerChoose = 0;
 
-function getResult(userChoice, computerChoice) {
-  if (userChoice === computerChoice) return "TIE";
-  if (
-    (userChoice === 0 && computerChoice === 2) ||
-    (userChoice === 1 && computerChoice === 0) ||
-    (userChoice === 2 && computerChoice === 1)
-  ) {
-    return "WON";
+document.addEventListener("DOMContentLoaded", () => {
+  const gameNumberInput = $("game-number");
+  const playButton = $("play-game");
+  const rockBtn = $("rock");
+  const paperBtn = $("paper");
+  const scissorsBtn = $("scissors");
+
+  const computerChooseEl = $("computer-choose");
+  const roundResultEl = $("round-result");
+  const roundsLeftEl = $("rounds-left");
+  const userPointsEl = $("user-points");
+  const computerPointsEl = $("computer-points");
+  const gameResultEl = $("game-result");
+
+  if (!gameNumberInput || !playButton || !rockBtn || !paperBtn || !scissorsBtn) return;
+
+  function updateUI() {
+    roundsLeftEl.textContent = roundsLeft;
+    userPointsEl.textContent = userPoints;
+    computerPointsEl.textContent = computerPoints;
   }
-  return "LOSE";
-}
 
-function endGame() {
-  if (userPoints > computerPoints) gameResultEl.textContent = "WON";
-  else if (userPoints < computerPoints) gameResultEl.textContent = "LOSE";
-  else gameResultEl.textContent = "TIE";
-}
+  function getComputerChoice() {
+    const choice = Math.floor(Math.random() * 3);
+    window.computerChoose = choice;
+    computerChooseEl.textContent = ["ROCK", "PAPER", "SCISSORS"][choice];
+    return choice;
+  }
 
-function playRound(userChoice) {
-  if (!gameStarted || roundsLeft <= 0) return;
+  function getResult(userChoice, computerChoice) {
+    if (userChoice === computerChoice) return "TIE";
+    if (
+      (userChoice === 0 && computerChoice === 2) ||
+      (userChoice === 1 && computerChoice === 0) ||
+      (userChoice === 2 && computerChoice === 1)
+    ) return "WON";
+    return "LOSE";
+  }
 
-  const computerChoice = getComputerChoice();
-  const result = getResult(userChoice, computerChoice);
+  function endGame() {
+    if (userPoints > computerPoints) gameResultEl.textContent = "WON";
+    else if (userPoints < computerPoints) gameResultEl.textContent = "LOSE";
+    else gameResultEl.textContent = "TIE";
+  }
 
-  roundResultEl.textContent = result;
+  function playRound(userChoice) {
+    if (!gameStarted || roundsLeft <= 0) return;
 
-  if (result === "WON") userPoints++;
-  else if (result === "LOSE") computerPoints++;
+    const computerChoice = getComputerChoice();
+    const result = getResult(userChoice, computerChoice);
 
-  roundsLeft--;
-  updateUI();
+    roundResultEl.textContent = result;
 
-  if (roundsLeft === 0) endGame();
-}
+    if (result === "WON") userPoints++;
+    else if (result === "LOSE") computerPoints++;
 
-playButton.addEventListener("click", () => {
-  totalRounds = parseInt(gameNumberInput.value);
-  if (isNaN(totalRounds) || totalRounds <= 0) return;
+    roundsLeft--;
+    updateUI();
 
-  roundsLeft = totalRounds;
-  userPoints = 0;
-  computerPoints = 0;
-  gameStarted = true;
+    if (roundsLeft === 0) endGame();
+  }
 
-  gameResultEl.textContent = "";
-  roundResultEl.textContent = "";
-  computerChooseEl.textContent = "";
+  playButton.addEventListener("click", () => {
+    totalRounds = parseInt(gameNumberInput.value);
+    if (isNaN(totalRounds) || totalRounds <= 0) return;
+
+    roundsLeft = totalRounds;
+    userPoints = 0;
+    computerPoints = 0;
+    gameStarted = true;
+
+    roundResultEl.textContent = "";
+    computerChooseEl.textContent = "";
+    gameResultEl.textContent = "";
+    updateUI();
+  });
+
+  rockBtn.addEventListener("click", () => playRound(0));
+  paperBtn.addEventListener("click", () => playRound(1));
+  scissorsBtn.addEventListener("click", () => playRound(2));
+
   updateUI();
 });
-
-rockBtn.addEventListener("click", () => playRound(0));
-paperBtn.addEventListener("click", () => playRound(1));
-scissorsBtn.addEventListener("click", () => playRound(2));
-
-updateUI();
