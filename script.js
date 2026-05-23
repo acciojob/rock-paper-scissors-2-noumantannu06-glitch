@@ -4,8 +4,8 @@ let userPoints = 0;
 let computerPoints = 0;
 let gameStarted = false;
 
-function $(val) {
-  return document.querySelector(`[data-ns-test="${val}"]`);
+function $(name) {
+  return document.querySelector(`[data-ns-test="${name}"]`);
 }
 
 window.computerChoose = 0;
@@ -24,7 +24,21 @@ document.addEventListener("DOMContentLoaded", () => {
   const computerPointsEl = $("computer-points");
   const gameResultEl = $("game-result");
 
-  if (!gameNumberInput || !playButton || !rockBtn || !paperBtn || !scissorsBtn) return;
+  if (
+    !gameNumberInput ||
+    !playButton ||
+    !rockBtn ||
+    !paperBtn ||
+    !scissorsBtn ||
+    !computerChooseEl ||
+    !roundResultEl ||
+    !roundsLeftEl ||
+    !userPointsEl ||
+    !computerPointsEl ||
+    !gameResultEl
+  ) {
+    return;
+  }
 
   function updateUI() {
     roundsLeftEl.textContent = roundsLeft;
@@ -45,7 +59,9 @@ document.addEventListener("DOMContentLoaded", () => {
       (userChoice === 0 && computerChoice === 2) ||
       (userChoice === 1 && computerChoice === 0) ||
       (userChoice === 2 && computerChoice === 1)
-    ) return "WON";
+    ) {
+      return "WON";
+    }
     return "LOSE";
   }
 
